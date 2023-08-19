@@ -17,14 +17,16 @@ ALTER DATABASE G2 SET AUTO_UPDATE_STATISTICS_ASYNC ON;
 ALTER DATABASE G2 SET AUTO_CREATE_STATISTICS ON;
 ```
 
-Turn off parallelism
+Turn off parallelism, turn on lightweight pooling
 ```
 EXEC sp_configure 'show advanced options', 1;  
 GO  
 RECONFIGURE WITH OVERRIDE;  
 GO  
 EXEC sp_configure 'max degree of parallelism', 1;  
-GO  
+GO
+EXEC sp_configure 'lightweight pooling', 1;
+GO
 RECONFIGURE WITH OVERRIDE;  
 GO
 EXEC sp_configure
