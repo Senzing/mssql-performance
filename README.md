@@ -38,6 +38,7 @@ GO
 ```
 
 LATCH_EX/PAGELATCH_EX?
+
 This is actually very helpful for contention and is the default on Azure SQL.
 ```
 ALTER DATABASE G2 SET ALLOW_SNAPSHOT_ISOLATION ON
