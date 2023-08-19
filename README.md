@@ -33,7 +33,7 @@ GO
 
 What is going on?
 ```
-SELECT sqltext.TEXT,req.status,req.wait_type,count(*) as cnt, sum(req.total_elapsed_time) FROM sys.dm_exec_requests req CROSS APPLY sys.dm_exec_sql_text(sql_handle) AS sqltext group by sqltext.TEXT,req.status,req.wait_type order by cnt asc;
+SELECT sqltext.TEXT,req.status,req.wait_type,count(*) as cnt, sum(req.total_elapsed_time) FROM sys.dm_exec_requests req CROSS APPLY sys.dm_exec_sql_text(sql_handle) AS sqltext where wait_type is not NULL group by sqltext.TEXT,req.status,req.wait_type order by cnt asc;
 GO
 ```
 
@@ -48,7 +48,8 @@ GO
 ```
 
 Recreate the LIB_FEAT and RES_FEAT_STAT indexes to optimize for sequential inserts
+This is a pretty neat capability.  Rather than have to manually call "REVERSE" to create a functional index and make sure you use it in query (or like DB2 which has patented reverse indexes), MS SQL has this flag you can set to let the system know the index will have contention due to sequential keys (like LIB_FEAT_ID).  When you restart the database, it doesn't use this initially but takes a few minutes of PAGELATCH_EX contention and then it figures it out.  You then get BTREE_INSERT_FLOW_CONTROL and eventually the contention just largely goes away.
 ```
-create unique index LIB_FEAT_PK on LIB_FEAT (LIB_FEAT_ID) WITH (OPTIMIZE_FOR_SEQUENTIAL_KEY=ON, DROP_EXISTING=ON, FILLFACTOR=80);```
-create unique index RES_FEAT_STAT_PK on RES_FEAT_STAT (LIB_FEAT_ID) WITH (OPTIMIZE_FOR_SEQUENTIAL_KEY=ON, DROP_EXISTING=ON, FILLFACTOR=80);
+CREATE unique index LIB_FEAT_PK on LIB_FEAT (LIB_FEAT_ID) WITH (OPTIMIZE_FOR_SEQUENTIAL_KEY=ON, DROP_EXISTING=ON, FILLFACTOR=80);```
+CREATE unique index RES_FEAT_STAT_PK on RES_FEAT_STAT (LIB_FEAT_ID) WITH (OPTIMIZE_FOR_SEQUENTIAL_KEY=ON, DROP_EXISTING=ON, FILLFACTOR=80);
 ```
