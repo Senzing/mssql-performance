@@ -1,23 +1,23 @@
 # mssql-performance
 This repo contains working notes on MSSQL performance tweaks.
 
-UTF-8 DB
+## UTF-8 DB
 ```
 CREATE DATABASE G2 COLLATE Latin1_General_100_CS_AI_SC_UTF8
 ```
 
-Auto-commit enable
+## Auto-commit enable
 ```
 ALTER DATABASE G2 SET DELAYED_DURABILITY = Forced;
 ```
 
-Don’t wait for statistic updates
+## Don’t wait for statistic updates
 ```
 ALTER DATABASE G2 SET AUTO_UPDATE_STATISTICS_ASYNC ON;
 ALTER DATABASE G2 SET AUTO_CREATE_STATISTICS ON;
 ```
 
-Turn off parallelism, turn on lightweight pooling
+## Turn off parallelism, turn on lightweight pooling
 ```
 EXEC sp_configure 'show advanced options', 1;  
 GO  
@@ -33,13 +33,13 @@ EXEC sp_configure
 GO
 ```
 
-What is going on?
+## What is going on?
 ```
 SELECT sqltext.TEXT,req.status,req.wait_type,count(*) as cnt, sum(req.total_elapsed_time) FROM sys.dm_exec_requests req CROSS APPLY sys.dm_exec_sql_text(sql_handle) AS sqltext where wait_type is not NULL group by sqltext.TEXT,req.status,req.wait_type having count(*)>1 order by cnt asc;
 GO
 ```
 
-LATCH_EX/PAGELATCH_EX?
+## LATCH_EX/PAGELATCH_EX?
 
 This is actually very helpful for contention and is the default on Azure SQL.
 ```
