@@ -39,7 +39,7 @@ SELECT sqltext.TEXT,req.status,req.wait_type,count(*) as cnt, sum(req.total_ela
 GO
 ```
 
-## LATCH_EX/PAGELATCH_EX?
+### LATCH_EX/PAGELATCH_EX?
 
 This is actually very helpful for contention and is the default on Azure SQL.
 ```
