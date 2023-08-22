@@ -17,14 +17,15 @@ ALTER DATABASE G2 SET AUTO_UPDATE_STATISTICS_ASYNC ON;
 ALTER DATABASE G2 SET AUTO_CREATE_STATISTICS ON;
 ```
 
-## Adjust parallelism (NUMA) turn on lightweight pooling
+## Turn on lightweight pooling
 ```
 EXEC sp_configure 'show advanced options', 1;  
 GO  
 RECONFIGURE WITH OVERRIDE;  
-GO  
-EXEC sp_configure 'max degree of parallelism', 16;  
 GO
+--- This is the default and seems to work well
+--- EXEC sp_configure 'max degree of parallelism', 0;  
+--- GO
 EXEC sp_configure 'lightweight pooling', 1;
 GO
 RECONFIGURE WITH OVERRIDE;  
