@@ -1,5 +1,5 @@
 # mssql-performance
-This repo contains working notes on MSSQL performance tweaks.
+This repo contains working notes on MSSQL performance tweaks.  This work was all done on MS SQL 2022 with the docker container.
 
 ## UTF-8 DB
 ```
@@ -17,13 +17,13 @@ ALTER DATABASE G2 SET AUTO_UPDATE_STATISTICS_ASYNC ON;
 ALTER DATABASE G2 SET AUTO_CREATE_STATISTICS ON;
 ```
 
-## Turn off parallelism, turn on lightweight pooling
+## Adjust parallelism (NUMA) turn on lightweight pooling
 ```
 EXEC sp_configure 'show advanced options', 1;  
 GO  
 RECONFIGURE WITH OVERRIDE;  
 GO  
-EXEC sp_configure 'max degree of parallelism', 1;  
+EXEC sp_configure 'max degree of parallelism', 16;  
 GO
 EXEC sp_configure 'lightweight pooling', 1;
 GO
@@ -35,8 +35,16 @@ GO
 
 ## What is going on?
 ```
+--- Currently waiting 
 SELECT sqltext.TEXT,req.status,req.wait_type,count(*) as cnt, sum(req.total_elapsed_time) FROM sys.dm_exec_requests req CROSS APPLY sys.dm_exec_sql_text(sql_handle) AS sqltext where wait_type is not NULL group by sqltext.TEXT,req.status,req.wait_type having count(*)>1 order by cnt asc;
 GO
+--- Transactions per minute for the entire repository (doesn't count updates)
+--- light dimming
+select CUR_MINUTE as timegroup, count(*) from (select CONVERT(VARCHAR,DATEADD(s,ROUND(DATEDIFF(s,'1970-01-01 00:00:00',FIRST_SEEN_DT)/60,0)*60,'1970-01-01 00:00:00'),20) as CUR_MINUTE from DSRC_RECORD WITH (NOLOCK)) a group by CUR_MINUTE order by CUR_MINUTE DESC;
+GO
+--- Entire historical overall perf (only good for single large batch loads), could add where FIRST_SEEN_DT > ? to limit it to recent
+--- light dimming
+select min(FIRST_SEEN_DT) load_start, count(*) / (DATEDIFF(s,min(FIRST_SEEN_DT),max(FIRST_SEEN_DT))/60) erpm, count(*) total, DATEDIFF(mi,min(FIRST_SEEN_DT),max(FIRST_SEEN_DT))/(60.0*24.0) duration from DSRC_RECORD WITH (NOLOCK);
 ```
 
 ### LATCH_EX/PAGELATCH_EX?
