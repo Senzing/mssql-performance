@@ -40,7 +40,7 @@ SELECT sqltext.TEXT,req.status,req.wait_type,count(*) as cnt, sum(req.total_ela
 GO
 --- Transactions per minute for the entire repository (doesn't count updates)
 --- light dimming
-select CUR_MINUTE as timegroup, count(*) from (select CONVERT(VARCHAR,DATEADD(s,ROUND(DATEDIFF(s,'1970-01-01 00:00:00',FIRST_SEEN_DT)/60,0)*60,'1970-01-01 00:00:00'),20) as CUR_MINUTE from DSRC_RECORD WITH (NOLOCK)) a group by CUR_MINUTE order by CUR_MINUTE DESC;
+select CUR_MINUTE as timegroup, count(*) from (select CONVERT(VARCHAR,DATEADD(s,ROUND(DATEDIFF(s,'1970-01-01 00:00:00',FIRST_SEEN_DT)/60,0)*60,'1970-01-01 00:00:00'),20) as CUR_MINUTE from DSRC_RECORD WITH (NOLOCK)) a group by CUR_MINUTE order by CUR_MINUTE ASC;
 GO
 --- Entire historical overall perf (only good for single large batch loads), could add where FIRST_SEEN_DT > ? to limit it to recent
 --- light dimming
