@@ -1,5 +1,6 @@
 # mssql-performance
 This repo contains working notes on MSSQL performance tweaks.  This work was all done on MS SQL 2022 with the docker container.
+If you haven't already taken a look at the general performance document, please do: https://github.com/Senzing/performance-general/blob/main/README.md
 
 ## UTF-8 DB
 ```
