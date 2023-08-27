@@ -38,7 +38,7 @@ GO
 ## What is going on?
 ```
 --- Currently waiting 
-SELECT sqltext.TEXT,req.status,req.wait_type,count(*) as cnt, sum(req.total_elapsed_time) FROM sys.dm_exec_requests req CROSS APPLY sys.dm_exec_sql_text(sql_handle) AS sqltext where wait_type is not NULL group by sqltext.TEXT,req.status,req.wait_type having count(*)>1 order by cnt asc;
+select sqltext, CAST (STRING_AGG(wait_type, "|") as varchar(50)), sum(cnt) as cnt, sum(elapsed) as elapsed from (SELECT sqltext.TEXT as sqltext,req.wait_type as wait_type,count(*) as cnt, sum(req.total_elapsed_time) elapsed FROM sys.dm_exec_requests req CROSS APPLY sys.dm_exec_sql_text(sql_handle) AS sqltext where wait_type is not NULL group by sqltext.TEXT, req.wait_type having count(*)>1) a group by a.sqltext order by 3 desc;
 GO
 --- Transactions per minute for the entire repository (doesn't count updates)
 --- light dimming, limited to last hour
