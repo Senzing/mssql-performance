@@ -3,6 +3,7 @@ This repo contains working notes on MSSQL performance tweaks.  This work was all
 If you haven't already taken a look at the general performance document, please do: https://github.com/Senzing/performance-general/blob/main/README.md
 
 ## UTF-8 DB
+There shouldn't be any particular limitation on the collation except that it needs to be UTF8.  Case-sensitive is likely a good idea for performance and in case your Record IDs depend on case.
 ```
 CREATE DATABASE G2 COLLATE Latin1_General_100_CS_AI_SC_UTF8
 ```
@@ -79,5 +80,5 @@ DROP INDEX DSRC_RECORD.DSRC_RECORD_HK; -- 3.6 and newer
 GO
 ```
 
-For other schema optimizations take a look at performance_mods.sql in this repository.
+### For other schema optimizations take a look at performance_mods.sql in this repository.
 
