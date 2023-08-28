@@ -79,3 +79,5 @@ DROP INDEX DSRC_RECORD.DSRC_RECORD_HK; -- 3.6 and newer
 GO
 ```
 
+For other schema optimizations take a look at performance_mods.sql in this repository.
+
