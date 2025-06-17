@@ -1,0 +1,34 @@
+{
+  // Version of the setting file.  Always 0.2
+  "version": "0.2",
+  // language - current active spelling language
+  "language": "en",
+  // words - list of words to be always considered correct
+  "words": [
+    "CCLA",
+    "CODEOWNER",
+    "DATEADD",
+    "DATEDIFF",
+    "DSRC",
+    "EKEY",
+    "erpm",
+    "FILLFACTOR",
+    "FTYPE",
+    "GETDATE",
+    "ICLA",
+    "LKEY",
+    "OKEY",
+    "PAGELATCH",
+    "RKEY",
+    "Senzing",
+    "SKEY",
+    "sqltext",
+    "stackoverflow",
+    "timegroup",
+    "UTYPE",
+    "varchar"
+  ],
+  "ignorePaths": [
+    ".git/**"
+  ]
+}
